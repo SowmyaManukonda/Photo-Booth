@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Web Photo Booth</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/caman@4.1.2/dist/caman.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <h1><i class="fas fa-camera-retro"></i> Web Photo Booth</h1>
+      <div class="mode-toggle">
+        <button id="dark-mode-toggle"><i class="fas fa-moon"></i></button>
+      </div>
+    </header>
+
+    <main class="photo-booth">
+      <div class="preview-container">
+        <div class="media-wrapper">
+          <video id="video" autoplay playsinline></video>
+          <canvas id="canvas"></canvas>
+          <div id="ar-overlay"></div>
+          <div id="countdown" class="hidden"></div>
+        </div>
+
+        <div class="gallery-preview" id="gallery-preview">
+          <h3>Your Photos <span id="photo-count">0</span></h3>
+          <div class="gallery-scroll" id="gallery-scroll"></div>
+        </div>
+      </div>
+
+      <div class="control-panel">
+        <div class="control-group basic-controls">
+          <button id="capture-btn" class="btn btn-primary">
+            <i class="fas fa-camera"></i> Capture
+          </button>
+          <button id="record-btn" class="btn btn-secondary">
+            <i class="fas fa-video"></i> Record GIF
+          </button>
+          <button id="reset-btn" class="btn btn-danger">
+            <i class="fas fa-redo"></i> Reset
+          </button>
+        </div>
+
+        <div class="control-group">
+          <h3><i class="fas fa-sliders-h"></i> Effects</h3>
+          <div class="filters-grid">
+            <button data-filter="normal" class="filter-btn active">Normal</button>
+            <button data-filter="grayscale" class="filter-btn">Grayscale</button>
+            <button data-filter="sepia" class="filter-btn">Sepia</button>
+            <button data-filter="vintage" class="filter-btn">Vintage</button>
+            <button data-filter="pixelate" class="filter-btn">Pixelate</button>
+            <button data-filter="blur" class="filter-btn">Blur</button>
+            <button data-filter="invert" class="filter-btn">Invert</button>
+            <button data-filter="greenscreen" class="filter-btn">Green Screen</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <h3><i class="fas fa-sticky-note"></i> Stickers</h3>
+          <div class="stickers-grid" id="stickers-container">
+            <!-- Stickers will be loaded dynamically -->
+          </div>
+        </div>
+
+        <div class="control-group">
+          <h3><i class="fas fa-share-alt"></i> Share</h3>
+          <div class="share-buttons">
+            <button data-platform="instagram" class="btn btn-share">
+              <i class="fab fa-instagram"></i> Instagram
+            </button>
+            <button data-platform="facebook" class="btn btn-share">
+              <i class="fab fa-facebook"></i> Facebook
+            </button>
+            <button data-platform="twitter" class="btn btn-share">
+              <i class="fab fa-twitter"></i> Twitter
+            </button>
+            <button id="download-btn" class="btn btn-download" disabled>
+              <i class="fas fa-download"></i> Download
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Create Photo Strip</h2>
+        <div class="strip-options">
+          <button data-layout="single">Single Photo</button>
+          <button data-layout="strip4">4-Photo Strip</button>
+          <button data-layout="grid4">2×2 Grid</button>
+        </div>
+        <canvas id="strip-canvas"></canvas>
+        <button id="final-download" class="btn btn-primary">
+          <i class="fas fa-download"></i> Download Final
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/CCapture.js/1.1.0/CCapture.all.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
