@@ -556,4 +556,165 @@ document.addEventListener('DOMContentLoaded', async function() {
         );
         break;
     }
+    // Gallery state
+let capturedPhotos = [];
+
+// DOM Elements
+const galleryScroll = document.getElementById('gallery-scroll');
+const photoCount = document.getElementById('photo-count');
+const clearGalleryBtn = document.getElementById('clear-gallery');
+const createStripBtn = document.getElementById('create-strip');
+
+// Add photo to gallery
+function addToGallery(imageData) {
+  // Create gallery item element
+  const galleryItem = document.createElement('div');
+  galleryItem.className = 'gallery-item';
+  
+  // Create image element
+  const img = document.createElement('img');
+  img.src = imageData;
+  
+  // Create delete button
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'delete-photo';
+  deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+  deleteBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    removePhotoFromGallery(galleryItem, imageData);
+  });
+  
+  // Add elements to gallery item
+  galleryItem.appendChild(img);
+  galleryItem.appendChild(deleteBtn);
+  
+  // Add click handler to view photo
+  galleryItem.addEventListener('click', () => viewPhotoInCanvas(imageData));
+  
+  // Add to beginning of gallery
+  galleryScroll.insertBefore(galleryItem, galleryScroll.firstChild);
+  
+  // Add to photos array
+  capturedPhotos.unshift({
+    id: Date.now(),
+    data: imageData,
+    element: galleryItem
+  });
+  
+  // Update photo count
+  updatePhotoCount();
+  
+  // Auto-scroll to start
+  galleryScroll.scrollTo({
+    left: 0,
+    behavior: 'smooth'
+  });
+  
+  // Enable buttons if this is the first photo
+  if (capturedPhotos.length === 1) {
+    clearGalleryBtn.disabled = false;
+    createStripBtn.disabled = false;
+  }
+}
+
+// View photo in main canvas
+function viewPhotoInCanvas(imageData) {
+  const context = canvas.getContext('2d');
+  const img = new Image();
+  
+  img.onload = function() {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    context.drawImage(img, 0, 0);
+    video.style.display = 'none';
+    canvas.style.display = 'block';
+    downloadBtn.disabled = false;
+    
+    // Highlight the selected photo in gallery
+    document.querySelectorAll('.gallery-item').forEach(item => {
+      item.classList.remove('active-photo');
+    });
+    const galleryItem = [...capturedPhotos].find(photo => photo.data === imageData)?.element;
+    if (galleryItem) {
+      galleryItem.classList.add('active-photo');
+    }
+  };
+  
+  img.src = imageData;
+}
+
+// Remove photo from gallery
+function removePhotoFromGallery(galleryItem, imageData) {
+  // Remove from DOM
+  galleryItem.remove();
+  
+  // Remove from array
+  capturedPhotos = capturedPhotos.filter(photo => photo.data !== imageData);
+  
+  // Update photo count
+  updatePhotoCount();
+  
+  // Disable buttons if no photos left
+  if (capturedPhotos.length === 0) {
+    clearGalleryBtn.disabled = true;
+    createStripBtn.disabled = true;
+  }
+  
+  // If we're currently viewing this photo in canvas, reset to camera
+  if (canvas.style.display === 'block') {
+    const currentPhotoData = canvas.toDataURL('image/png');
+    if (currentPhotoData === imageData) {
+      resetToCamera();
+    }
+  }
+}
+
+// Clear all photos from gallery
+function clearGallery() {
+  // Remove all gallery items
+  galleryScroll.innerHTML = '';
+  
+  // Clear photos array
+  capturedPhotos = [];
+  
+  // Update photo count
+  updatePhotoCount();
+  
+  // Disable buttons
+  clearGalleryBtn.disabled = true;
+  createStripBtn.disabled = true;
+  
+  // Reset to camera view if showing a photo
+  if (canvas.style.display === 'block') {
+    resetToCamera();
+  }
+}
+
+// Reset to camera view
+function resetToCamera() {
+  video.style.display = 'block';
+  canvas.style.display = 'none';
+  downloadBtn.disabled = true;
+}
+
+// Update photo count display
+function updatePhotoCount() {
+  photoCount.textContent = capturedPhotos.length;
+}
+
+// Create photo strip from gallery
+function createPhotoStrip() {
+  if (capturedPhotos.length === 0) return;
+  
+  // Show modal with strip options
+  showStripModal();
+}
+
+// Event listeners
+clearGalleryBtn.addEventListener('click', clearGallery);
+createStripBtn.addEventListener('click', createPhotoStrip);
+
+// Initialize with buttons disabled
+clearGalleryBtn.disabled = true;
+createStripBtn.disabled = true;
   }

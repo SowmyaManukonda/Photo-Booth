@@ -27,11 +27,20 @@
           <div id="countdown" class="hidden"></div>
         </div>
 
-        <div class="gallery-preview" id="gallery-preview">
+        <div class="gallery-container">
           <h3>Your Photos <span id="photo-count">0</span></h3>
-          <div class="gallery-scroll" id="gallery-scroll"></div>
+          <div class="gallery-controls">
+            <button id="clear-gallery" class="btn btn-small btn-danger">
+              <i class="fas fa-trash"></i> Clear All
+            </button>
+            <button id="create-strip" class="btn btn-small btn-primary">
+              <i class="fas fa-th"></i> Create Strip
+            </button>
+          </div>
+          <div class="gallery-scroll" id="gallery-scroll">
+            <!-- Photos will be added here dynamically -->
+          </div>
         </div>
-      </div>
 
       <div class="control-panel">
         <div class="control-group basic-controls">
